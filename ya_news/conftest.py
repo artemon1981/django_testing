@@ -1,10 +1,10 @@
-import pytest
-
 from datetime import datetime, timedelta
 
+import pytest
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+
 from news.models import Comment, News
 
 COMMENT_TEXT = 'Текст комментария новый'
@@ -41,28 +41,28 @@ def comment(author, news):
 
 
 @pytest.fixture
-def news_11(author):
+def news_for_sort(author):
     """Создаем одинадцать новостей."""
     today = datetime.today()
-    news_11 = News.objects.bulk_create(
+    news_for_pagination = News.objects.bulk_create(
         News(title=f'Новость {index}',
              text='Просто текст.',
              date=today - timedelta(days=index))
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1))
-    return news_11
+    return news_for_pagination
 
 
 @pytest.fixture
-def comment_2(author, news):
+def comment_for_sort(author, news):
     """Создаем два комментария."""
     now = timezone.now()
     for index in range(2):
-        comment_2 = Comment.objects.create(
+        comment_for_sort = Comment.objects.create(
             news=news, author=author, text=f'Tекст {index}',
         )
-        comment_2.created = now + timedelta(days=index)
-        comment_2.save()
-    return comment_2
+        comment_for_sort.created = now + timedelta(days=index)
+        comment_for_sort.save()
+    return comment_for_sort
 
 
 @pytest.fixture
