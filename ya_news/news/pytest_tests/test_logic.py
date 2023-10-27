@@ -26,7 +26,7 @@ def test_user_can_create_comment(author_client, form_data, detail_url):
     response = author_client.post(detail_url, data=form_data)
     assertRedirects(response, f'{detail_url}#comments')
     comments_count = Comment.objects.count()
-    assert comments_count > comment_count_before_create
+    assert comments_count == comment_count_before_create + 1
     comment = Comment.objects.get()
     assert comment.text == COMMENT_TEXT
     assert comment.author == form_data['author']
@@ -84,7 +84,7 @@ def test_author_can_delete_comment(author_client,
     response = author_client.delete(delete_url)
     assertRedirects(response, url_to_comments)
     comments_count = Comment.objects.count()
-    assert comments_count < comment_count_before_delete
+    assert comments_count == comment_count_before_delete - 1
 
 
 def test_user_cant_delete_comment_of_another_user(admin_client,

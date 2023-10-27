@@ -41,7 +41,7 @@ class TestRoutes(TestCase):
         self.assertRedirects(response, self.url_success)
         notes_count = Note.objects.count()
         new_note = Note.objects.last()
-        self.assertGreater(notes_count, notes_count_before_create)
+        self.assertEqual(notes_count, notes_count_before_create + 1)
         self.assertEqual(new_note.title, self.form_data['title'])
         self.assertEqual(new_note.text, self.form_data['text'])
         self.assertEqual(new_note.slug, self.form_data['slug'])
@@ -82,7 +82,7 @@ class TestRoutes(TestCase):
         response = self.client.post(self.url_add_note, data=self.form_data)
         self.assertRedirects(response, self.url_success)
         notes_count = Note.objects.count()
-        self.assertGreater(notes_count, notes_count_before_create)
+        self.assertEqual(notes_count, notes_count_before_create + 1)
         new_note = Note.objects.get(pk=2)
         expected_slug = slugify(self.form_data['title'])
         self.assertEqual(new_note.slug, expected_slug)
@@ -117,7 +117,7 @@ class TestRoutes(TestCase):
         response = self.client.post(self.url_delete)
         self.assertRedirects(response, self.url_success)
         notes_count = Note.objects.count()
-        self.assertLess(notes_count, notes_count_before_delete)
+        self.assertEqual(notes_count, notes_count_before_delete - 1)
 
     def test_other_user_cant_delete_note(self):
         """Тест не автор не может удалить заметку."""
